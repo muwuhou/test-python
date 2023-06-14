@@ -6,7 +6,12 @@ def main():
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
     engine.quit.connect(app.quit)
-    engine.load('main.qml')
+    if len(sys.argv) == 2:
+        qmlfile = sys.argv[1]
+    else:
+        qmlfile = 'qml/app1.qml'
+    print("loading %s" % qmlfile)
+    engine.load(qmlfile)
     app.exec()
 
-main()    
+main()
