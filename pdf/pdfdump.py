@@ -21,8 +21,8 @@ def dump_annotations(pdf, simple_format):
                 obj = annot.get_object()
                 if simple_format:
                     annotation = {"subtype": obj["/Subtype"],
-                                  "widgettype": obj.get("/FT"),
-                                  "location": obj["/Rect"],
+                                  "fieldtype": obj.get("/FT"),
+                                  "rect": obj["/Rect"],
                                   "fieldname": obj.get("/T"),
                                   "text": obj.get("/TU"),
                                   "value": obj.get("/V")}
@@ -35,10 +35,18 @@ def dump_text(pdf):
     i = 1
     for page in pdf.pages:
         print("========= page %s text =============" % i)
-        text = page.extract_text()
+        #text = page.extract_text()
+        text = page.extract_text(extraction_mode="layout") # extract text preversing layout
         print(text)
         i += 1
 
+
+def dump_fields(pdf):
+    print("====================== fields ===================")
+    fields = pdf.get_fields()
+    if fields:
+        for k,v in fields.items():
+            print("%s = %s" % (k, v))
 
 
 assert len(sys.argv) == 2, "please specify a pdf filename"
@@ -46,3 +54,4 @@ filename = sys.argv[1]
 pdf = PdfReader(filename)
 dump_text(pdf)
 dump_annotations(pdf, simple_format=True)
+dump_fields(pdf)
